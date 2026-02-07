@@ -553,7 +553,27 @@ else {
 
     return el("div",{class:"grid"},[head, lessons]);
   }
+function renderLesson(moduleId, lessonId){
+  const m = MODULES.find(x => String(x.id) === String(moduleId));
+  if(!m) return el("div",{class:"card"},["Module not found"]);
 
+  const l = (m.lessons || []).find(x => String(x.id) === String(lessonId));
+  if(!l) return el("div",{class:"card"},["Lesson not found"]);
+
+  const title = (l.title && (l.title[state.lang] || l.title.en)) || l.title || `Lesson ${moduleId}.${lessonId}`;
+  const text  = (l.text  && (l.text[state.lang]  || l.text.en))  || l.text  || "Lesson text will be added next.";
+
+  return el("div",{class:"grid"},[
+    el("div",{class:"card"},[
+      el("div",{class:"section-title"},[`Module ${moduleId}`]),
+      el("h2",{},[title]),
+      el("p",{class:"muted"},[text]),
+      el("div",{class:"row"},[
+        el("button",{class:"btn", onclick:()=> location.hash = `#module/${moduleId}`},["Back to module"])
+      ])
+    ])
+  ]);
+}
   function renderProgress(){
     const done = completedLessons(state.progress);
     const total = totalLessons();
