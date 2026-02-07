@@ -387,12 +387,27 @@ state.selectedLessonId = (route === "lesson") ? parts[2] : null;
     const view = document.getElementById("view");
     view.innerHTML = "";
 
-    if(state.route === "home") view.appendChild(renderHome());
-    else if(state.route === "course") view.appendChild(renderCourse());
-    else if(state.route === "module" && state.selectedModuleId) view.appendChild(renderModule(state.selectedModuleId));
-    else if(state.route === "progress") view.appendChild(renderProgress());
-    else if(state.route === "profile") view.appendChild(renderProfile());
-    else { location.hash = "#home"; }
+    if(state.route === "home") {
+  view.appendChild(renderHome());
+}
+else if(state.route === "course") {
+  view.appendChild(renderCourse());
+}
+else if(state.route === "module" && state.selectedModuleId) {
+  view.appendChild(renderModule(state.selectedModuleId));
+}
+else if(state.route === "lesson" && state.selectedModuleId && state.selectedLessonId) {
+  view.appendChild(renderLesson(state.selectedModuleId, state.selectedLessonId));
+}
+else if(state.route === "progress") {
+  view.appendChild(renderProgress());
+}
+else if(state.route === "profile") {
+  view.appendChild(renderProfile());
+}
+else {
+  location.hash = "#home";
+}
   }
 
   function el(tag, attrs={}, children=[]){
