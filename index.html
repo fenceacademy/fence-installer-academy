@@ -376,9 +376,11 @@
     document.getElementById("appSubtitle").textContent = CONTENT[state.lang].appSubtitle;
 
     const hash = (location.hash || "#home").replace("#","");
-    const [route, param] = hash.split("/");
-    state.route = route || "home";
-    state.selectedModuleId = (route === "module") ? param : null;
+const parts = hash.split("/");
+const route = parts[0];
+state.route = route || "home";
+state.selectedModuleId = (route === "module" || route === "lesson") ? parts[1] : null;
+state.selectedLessonId = (route === "lesson") ? parts[2] : null;
 
     setActiveNav(state.route);
 
