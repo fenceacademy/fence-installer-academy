@@ -1,889 +1,201 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0f14" />
-  <title>Fence Installer Academy</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<title>Fence Installer Academy</title>
 
-  <!-- Minimal PWA -->
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <style>
-    :root{
-      --bg:#0b0f14;
-      --bg2:#0f1620;
-      --card:#111a25;
-      --text:#e8eef6;
-      --muted:#9aa8ba;
-      --line:#1b2838;
-      --accent:#6bb7ff;
-      --ok:#3ddc84;
-      --warn:#ffcc66;
-      --danger:#ff6b6b;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius:14px;
-      --max: 980px;
-      --navH: 64px;
-      --safeB: env(safe-area-inset-bottom, 0px);
-      --safeT: env(safe-area-inset-top, 0px);
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-    }
-
-    *{ box-sizing:border-box; }
-    html, body{ height:100%; }
-    body{
-      margin:0;
-      background: radial-gradient(1200px 700px at 20% -10%, rgba(107,183,255,.15), transparent 55%),
-                  radial-gradient(900px 600px at 90% 0%, rgba(61,220,132,.10), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-      font-family: var(--font);
-      line-height:1.35;
-      -webkit-font-smoothing: antialiased;
-      padding-bottom: calc(var(--navH) + var(--safeB));
-    }
-
-    a, button { -webkit-tap-highlight-color: rgba(0,0,0,0); }
-    .app{
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: calc(18px + var(--safeT)) 16px 16px;
-    }
-
-    header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 12px;
-    }
-
-    .brand{
-      display:flex; flex-direction:column;
-      gap:4px;
-    }
-    .brand .title{ font-size: 16px; font-weight: 700; letter-spacing:.2px; }
-    .brand .sub{ font-size: 12px; color: var(--muted); }
-
-    .top-actions{
-      display:flex; gap:8px; align-items:center;
-    }
-
-    .btn{
-      appearance:none;
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 13px;
-      cursor:pointer;
-      box-shadow: 0 1px 0 rgba(255,255,255,.05) inset;
-    }
-    .btn:active{ transform: translateY(1px); }
-    .btn.primary{
-      border-color: rgba(107,183,255,.35);
-      box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 0 0 3px rgba(107,183,255,.08);
-    }
-    .btn.ghost{
-      background: transparent;
-      border-color: transparent;
-      color: var(--muted);
-    }
-    .btn.danger{
-      border-color: rgba(255,107,107,.35);
-      color: #ffd0d0;
-    }
-
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px;
-      box-shadow: var(--shadow);
-    }
-    .card + .card{ margin-top: 12px; }
-
-    .h1{ font-size: 22px; margin: 4px 0 10px; letter-spacing:.2px; }
-    .h2{ font-size: 16px; margin: 0 0 10px; color: var(--text); }
-    .muted{ color: var(--muted); }
-    .small{ font-size: 12px; color: var(--muted); }
-
-    .list{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(15,22,32,.5);
-      cursor:pointer;
-      user-select:none;
-    }
-    .row:hover{ border-color: rgba(107,183,255,.35); }
-    .row:active{ transform: translateY(1px); }
-
-    .row-left{ display:flex; flex-direction:column; gap:4px; min-width: 0; }
-    .row-title{ font-weight: 650; font-size: 14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .row-sub{ font-size: 12px; color: var(--muted); }
-
-    .pill{
-      font-size: 12px;
-      padding: 6px 8px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      white-space:nowrap;
-    }
-    .pill.ok{
-      border-color: rgba(61,220,132,.35);
-      color: #c8ffe1;
-      background: rgba(61,220,132,.08);
-    }
-
-    .progressbar{
-      height: 10px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      overflow:hidden;
-    }
-    .progressbar > div{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(107,183,255,.95), rgba(61,220,132,.95));
-    }
-    .split{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:12px;
-    }
-    @media (min-width: 760px){
-      .split{ grid-template-columns: 1.2fr .8fr; }
-    }
-
-    .lesson-content p{
-      margin: 10px 0;
-      color: var(--text);
-    }
-
-    /* Bottom nav */
-    .bottom-nav{
-      position: fixed;
-      left:0; right:0; bottom:0;
-      height: calc(var(--navH) + var(--safeB));
-      padding-bottom: var(--safeB);
-      background: rgba(11,15,20,.78);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-top: 1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index: 50;
-    }
-    .nav-inner{
-      width: min(var(--max), 100%);
-      display:flex;
-      gap:6px;
-      padding: 10px 10px;
-    }
-    .nav-item{
-      flex: 1;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:4px;
-      padding: 9px 8px;
-      border-radius: 14px;
-      border: 1px solid transparent;
-      color: var(--muted);
-      cursor:pointer;
-      user-select:none;
-      font-size: 12px;
-    }
-    .nav-item.active{
-      color: var(--text);
-      border-color: rgba(107,183,255,.30);
-      background: rgba(107,183,255,.08);
-    }
-    .nav-dot{
-      width:6px; height:6px; border-radius:999px;
-      background: rgba(255,255,255,.18);
-    }
-    .nav-item.active .nav-dot{
-      background: rgba(107,183,255,.9);
-    }
-
-    /* Tiny helpers */
-    .spacer{ height: 6px; }
-    .divider{ height:1px; background: var(--line); margin: 12px 0; }
-    .nowrap{ white-space:nowrap; }
-    .kpi{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(17,26,37,.45);
-    }
-    .kpi b{ font-size: 14px; }
-    .kpi span{ color: var(--muted); font-size: 12px; }
-
-    /* Make tappable on iOS Safari */
-    [data-nav], .row, .btn, .nav-item { cursor: pointer; }
-  </style>
+<style>
+:root{
+  --bg:#0b1220;
+  --bg2:#0f1a2e;
+  --card:#111c33;
+  --text:#e7ecf4;
+  --muted:#9aa4b2;
+  --accent:#5fb3ff;
+  --ok:#3ddc84;
+  --line:#1f2a44;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,Inter,Segoe UI,Roboto,Arial;
+  background:linear-gradient(180deg,var(--bg),var(--bg2));
+  color:var(--text);
+}
+header{
+  padding:16px 18px;
+  font-weight:700;
+  letter-spacing:.3px;
+}
+main{padding:16px 16px 90px}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:16px;
+  margin-bottom:14px;
+}
+h1,h2,h3{margin:0 0 10px}
+p{color:var(--muted);margin:6px 0}
+button{
+  background:#142243;
+  color:var(--text);
+  border:1px solid var(--line);
+  padding:10px 14px;
+  border-radius:12px;
+  cursor:pointer;
+}
+button.primary{background:var(--accent);color:#081220}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#0f1930;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+nav{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  background:#0b1220;
+  border-top:1px solid var(--line);
+  display:flex;
+}
+nav button{
+  flex:1;
+  background:none;
+  border:none;
+  padding:14px 0;
+  color:var(--muted);
+}
+nav button.active{color:var(--accent)}
+.badge{
+  background:var(--accent);
+  color:#081220;
+  padding:3px 8px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:700;
+}
+</style>
 </head>
 
 <body>
-  <div class="app">
-    <header>
-      <div class="brand">
-        <div class="title">Fence Installer Academy</div>
-        <div id="routeHint" class="sub">Offline-first PWA • SPA</div>
-      </div>
-      <div class="top-actions">
-        <button id="backBtn" class="btn ghost" type="button">← Back</button>
-      </div>
-    </header>
-
-    <main id="app"></main>
-  </div>
-
-  <nav class="bottom-nav" aria-label="Bottom navigation">
-    <div class="nav-inner">
-      <div class="nav-item" id="navHome" data-nav="#home">
-        <div class="nav-dot"></div>
-        <div>Home</div>
-      </div>
-      <div class="nav-item" id="navCourse" data-nav="#course">
-        <div class="nav-dot"></div>
-        <div>Course</div>
-      </div>
-      <div class="nav-item" id="navProgress" data-nav="#progress">
-        <div class="nav-dot"></div>
-        <div>Progress</div>
-      </div>
-      <div class="nav-item" id="navProfile" data-nav="#profile">
-        <div class="nav-dot"></div>
-        <div>Profile</div>
-      </div>
-    </div>
-  </nav>
-
-  <script>
-    (function(){
-      "use strict";
-
-      // ---------- Data (modules 1-8, each 3 lessons) ----------
-      const MODULES = Array.from({length: 8}).map((_, i) => {
-        const moduleId = String(i + 1);
-        return {
-          id: moduleId,
-          title: `Module ${moduleId}`,
-          subtitle: `Core skills • Practical steps • Checklists`,
-          lessons: Array.from({length: 3}).map((__, j) => {
-            const lessonId = String(j + 1);
-            return {
-              id: lessonId,
-              title: `Lesson ${moduleId}.${lessonId}`,
-              teaser: `Placeholder lesson content for module ${moduleId}, lesson ${lessonId}.`
-            };
-          })
-        };
-      });
-
-      // ---------- Storage ----------
-      const LS_KEY = "fia_progress_v1";
-
-      function loadProgress(){
-        try{
-          const raw = localStorage.getItem(LS_KEY);
-          if(!raw) return { completed: {} };
-          const parsed = JSON.parse(raw);
-          if(!parsed || typeof parsed !== "object") return { completed: {} };
-          if(!parsed.completed || typeof parsed.completed !== "object") parsed.completed = {};
-          return parsed;
-        }catch(e){
-          return { completed: {} };
-        }
-      }
-
-      function saveProgress(state){
-        try{
-          localStorage.setItem(LS_KEY, JSON.stringify(state));
-        }catch(e){
-          // ignore
-        }
-      }
-
-      function lessonKey(moduleId, lessonId){
-        return `${moduleId}:${lessonId}`;
-      }
-
-      function isCompleted(state, moduleId, lessonId){
-        return !!state.completed[lessonKey(moduleId, lessonId)];
-      }
-
-      function setCompleted(state, moduleId, lessonId, value){
-        const key = lessonKey(moduleId, lessonId);
-        if(value) state.completed[key] = 1;
-        else delete state.completed[key];
-        saveProgress(state);
-      }
-
-      function moduleStats(state, module){
-        const total = module.lessons.length;
-        const done = module.lessons.reduce((acc, l) => acc + (isCompleted(state, module.id, l.id) ? 1 : 0), 0);
-        const pct = total ? Math.round((done / total) * 100) : 0;
-        return { done, total, pct };
-      }
-
-      function overallStats(state){
-        const total = MODULES.reduce((acc, m) => acc + m.lessons.length, 0);
-        const done = MODULES.reduce((acc, m) => acc + m.lessons.reduce((a, l) => a + (isCompleted(state, m.id, l.id) ? 1 : 0), 0), 0);
-        const pct = total ? Math.round((done / total) * 100) : 0;
-        return { done, total, pct };
-      }
-
-      // ---------- Routing ----------
-      // Supported:
-      // #home, #course, #module/<moduleId>, #lesson/<moduleId>/<lessonId>, #progress, #profile
-      function getHash(){
-        const h = (location.hash || "").trim();
-        return h ? h : "#home";
-      }
-
-      function parseRoute(hash){
-        const clean = (hash || "#home").replace(/^#/, "");
-        const parts = clean.split("/").filter(Boolean);
-
-        const route = {
-          name: parts[0] || "home",
-          params: {}
-        };
-
-        if(route.name === "module" && parts[1]){
-          route.params.moduleId = parts[1];
-        } else if(route.name === "lesson" && parts[1] && parts[2]){
-          route.params.moduleId = parts[1];
-          route.params.lessonId = parts[2];
-        }
-        return route;
-      }
-
-      // Reliable Safari behavior:
-      // navigate(hash) sets location.hash and immediately calls render()
-      // plus we still listen to hashchange and force render on next tick
-      function navigate(hash){
-        const target = (hash && hash.startsWith("#")) ? hash : ("#" + String(hash || "home"));
-        if(location.hash !== target){
-          location.hash = target;
-        }
-        // Always render immediately (Safari can be picky with hashchange timing)
-        render();
-
-        // Also force another render on next tick to ensure UI updates after hash is applied
-        setTimeout(render, 0);
-      }
-
-      window.navigate = navigate; // exposed for debugging / external calls if needed
-
-      window.addEventListener("hashchange", () => {
-        // Safari: sometimes click + hashchange ordering causes missed UI updates
-        render();
-        setTimeout(render, 0);
-      }, false);
-
-      // ---------- UI helpers ----------
-      const $app = document.getElementById("app");
-      const $routeHint = document.getElementById("routeHint");
-      const $backBtn = document.getElementById("backBtn");
-
-      function esc(s){
-        return String(s)
-          .replaceAll("&","&amp;")
-          .replaceAll("<","&lt;")
-          .replaceAll(">","&gt;")
-          .replaceAll('"',"&quot;")
-          .replaceAll("'","&#039;");
-      }
-
-      function setActiveNav(hash){
-        const h = hash || "#home";
-        const base = h.split("/")[0]; // #home, #course, #module, #lesson, #progress, #profile
-        const map = {
-          "#home": "navHome",
-          "#course": "navCourse",
-          "#module": "navCourse",
-          "#lesson": "navCourse",
-          "#progress": "navProgress",
-          "#profile": "navProfile"
-        };
-        const activeId = map[base] || "navHome";
-        ["navHome","navCourse","navProgress","navProfile"].forEach(id => {
-          const el = document.getElementById(id);
-          if(!el) return;
-          el.classList.toggle("active", id === activeId);
-        });
-      }
-
-      function backTarget(route){
-        // Back mapping
-        // module -> course
-        // lesson -> module/<moduleId>
-        // progress/profile -> home
-        // home/course -> none (stay home)
-        if(route.name === "lesson"){
-          const m = route.params.moduleId;
-          return m ? `#module/${m}` : "#course";
-        }
-        if(route.name === "module") return "#course";
-        if(route.name === "progress" || route.name === "profile") return "#home";
-        if(route.name === "course") return "#home";
-        return "#home";
-      }
-
-      function updateBackButton(route){
-        const show = !(route.name === "home");
-        $backBtn.style.visibility = show ? "visible" : "hidden";
-      }
-
-      // ---------- Views ----------
-      function viewHome(state){
-        const overall = overallStats(state);
-        return `
-          <div class="card">
-            <div class="h1">Welcome</div>
-            <div class="muted">A minimal offline-first SPA (no frameworks). Use Course → Module → Lesson to learn.</div>
-
-            <div class="divider"></div>
-
-            <div class="kpi">
-              <div>
-                <b>Overall progress</b><div class="small">${overall.done}/${overall.total} lessons completed</div>
-              </div>
-              <div class="nowrap"><b>${overall.pct}%</b></div>
-            </div>
-
-            <div class="spacer"></div>
-            <div class="progressbar" aria-label="Overall progress bar">
-              <div style="width:${overall.pct}%"></div>
-            </div>
-
-            <div class="divider"></div>
-
-            <button class="btn primary" type="button" data-nav="#course">Open Course</button>
-            <button class="btn" type="button" data-nav="#progress" style="margin-left:8px;">View Progress</button>
-          </div>
-
-          <div class="card">
-            <div class="h2">Quick actions</div>
-            <div class="list">
-              <div class="row" data-nav="#course">
-                <div class="row-left">
-                  <div class="row-title">Go to Course</div>
-                  <div class="row-sub">Browse modules and lessons</div>
-                </div>
-                <div class="pill">→</div>
-              </div>
-              <div class="row" data-nav="#profile">
-                <div class="row-left">
-                  <div class="row-title">Profile</div>
-                  <div class="row-sub">Settings placeholder</div>
-                </div>
-                <div class="pill">→</div>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      function viewCourse(state){
-        const overall = overallStats(state);
-
-        const rows = MODULES.map(m => {
-          const st = moduleStats(state, m);
-          const doneAll = st.done === st.total;
-          return `
-            <div class="row" data-nav="#module/${esc(m.id)}">
-              <div class="row-left">
-                <div class="row-title">${esc(m.title)}</div>
-                <div class="row-sub">${esc(m.subtitle)} • ${st.done}/${st.total} • ${st.pct}%</div>
-              </div>
-              <div class="pill ${doneAll ? "ok" : ""}">${doneAll ? "Done" : "Open"}</div>
-            </div>
-          `;
-        }).join("");
-
-        return `
-          <div class="card">
-            <div class="h1">Course</div>
-            <div class="muted">8 modules • 3 lessons each</div>
-
-            <div class="divider"></div>
-
-            <div class="kpi">
-              <div>
-                <b>Overall</b><div class="small">${overall.done}/${overall.total} lessons completed</div>
-              </div>
-              <div class="nowrap"><b>${overall.pct}%</b></div>
-            </div>
-
-            <div class="spacer"></div>
-            <div class="progressbar">
-              <div style="width:${overall.pct}%"></div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="h2">Modules</div>
-            <div class="list">${rows}</div>
-          </div>
-        `;
-      }
-
-      function viewModule(state, moduleId){
-        const mod = MODULES.find(m => m.id === moduleId);
-        if(!mod){
-          return `
-            <div class="card">
-              <div class="h1">Module not found</div>
-              <div class="muted">Invalid module id: ${esc(moduleId || "")}</div>
-              <div class="divider"></div>
-              <button class="btn primary" type="button" data-nav="#course">Back to Course</button>
-            </div>
-          `;
-        }
-
-        const st = moduleStats(state, mod);
-
-        const lessonRows = mod.lessons.map(l => {
-          const done = isCompleted(state, mod.id, l.id);
-          return `
-            <div class="row" data-nav="#lesson/${esc(mod.id)}/${esc(l.id)}">
-              <div class="row-left">
-                <div class="row-title">${esc(l.title)}</div>
-                <div class="row-sub">${esc(l.teaser)}</div>
-              </div>
-              <div class="pill ${done ? "ok" : ""}">${done ? "Completed" : "Open"}</div>
-            </div>
-          `;
-        }).join("");
-
-        return `
-          <div class="card">
-            <div class="h1">${esc(mod.title)}</div>
-            <div class="muted">${esc(mod.subtitle)}</div>
-
-            <div class="divider"></div>
-
-            <div class="kpi">
-              <div>
-                <b>Module progress</b><div class="small">${st.done}/${st.total} lessons completed</div>
-              </div>
-              <div class="nowrap"><b>${st.pct}%</b></div>
-            </div>
-
-            <div class="spacer"></div>
-            <div class="progressbar">
-              <div style="width:${st.pct}%"></div>
-            </div>
-
-            <div class="divider"></div>
-
-            <button class="btn" type="button" data-nav="#course">← Back to Course</button>
-          </div>
-
-          <div class="card">
-            <div class="h2">Lessons</div>
-            <div class="list">${lessonRows}</div>
-          </div>
-        `;
-      }
-
-      function viewLesson(state, moduleId, lessonId){
-        const mod = MODULES.find(m => m.id === moduleId);
-        const lesson = mod ? mod.lessons.find(l => l.id === lessonId) : null;
-
-        if(!mod || !lesson){
-          return `
-            <div class="card">
-              <div class="h1">Lesson not found</div>
-              <div class="muted">Invalid route: module=${esc(moduleId || "")}, lesson=${esc(lessonId || "")}</div>
-              <div class="divider"></div>
-              <button class="btn primary" type="button" data-nav="#course">Back to Course</button>
-            </div>
-          `;
-        }
-
-        const done = isCompleted(state, mod.id, lesson.id);
-        const st = moduleStats(state, mod);
-
-        const next = (function(){
-          const idx = mod.lessons.findIndex(l => l.id === lesson.id);
-          if(idx === -1) return null;
-          const nextLesson = mod.lessons[idx + 1] || null;
-          return nextLesson ? `#lesson/${mod.id}/${nextLesson.id}` : null;
-        })();
-
-        return `
-          <div class="card">
-            <div class="h1">${esc(lesson.title)}</div>
-            <div class="muted">${esc(mod.title)} • ${st.done}/${st.total} • ${st.pct}%</div>
-
-            <div class="divider"></div>
-
-            <div class="lesson-content">
-              <p><b>Goal:</b> Placeholder goal for this lesson.</p>
-              <p><b>Key points:</b></p>
-              <ul>
-                <li>Step-by-step explanation placeholder.</li>
-                <li>Tools & materials placeholder.</li>
-                <li>Common mistakes & safety notes placeholder.</li>
-              </ul>
-              <p class="muted">Text stub: ${esc(lesson.teaser)}</p>
-            </div>
-
-            <div class="divider"></div>
-
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <button class="btn primary" type="button" data-action="toggle-complete" data-mid="${esc(mod.id)}" data-lid="${esc(lesson.id)}">
-                ${done ? "Mark as incomplete" : "Mark as completed"}
-              </button>
-              <button class="btn" type="button" data-nav="#module/${esc(mod.id)}">← Back to Module</button>
-              ${next ? `<button class="btn" type="button" data-nav="${esc(next)}">Next →</button>` : `<span class="small">No next lesson</span>`}
-            </div>
-          </div>
-        `;
-      }
-
-      function viewProgress(state){
-        const overall = overallStats(state);
-
-        const moduleCards = MODULES.map(m => {
-          const st = moduleStats(state, m);
-          return `
-            <div class="row" data-nav="#module/${esc(m.id)}">
-              <div class="row-left">
-                <div class="row-title">${esc(m.title)}</div>
-                <div class="row-sub">${st.done}/${st.total} lessons • ${st.pct}%</div>
-              </div>
-              <div class="pill ${st.pct === 100 ? "ok" : ""}">${st.pct}%</div>
-            </div>
-          `;
-        }).join("");
-
-        return `
-          <div class="card">
-            <div class="h1">Progress</div>
-            <div class="muted">Your progress is saved locally on this device (localStorage).</div>
-
-            <div class="divider"></div>
-
-            <div class="split">
-              <div class="card" style="box-shadow:none; border-color: var(--line);">
-                <div class="h2">Overall</div>
-                <div class="kpi">
-                  <div><b>${overall.pct}%</b><div class="small">${overall.done}/${overall.total} lessons completed</div></div>
-                  <div class="pill ${overall.pct===100 ? "ok":""}">${overall.pct===100 ? "Done" : "In progress"}</div>
-                </div>
-                <div class="spacer"></div>
-                <div class="progressbar"><div style="width:${overall.pct}%"></div></div>
-
-                <div class="divider"></div>
-
-                <button class="btn danger" type="button" data-action="reset-progress">Reset progress</button>
-              </div>
-
-              <div class="card" style="box-shadow:none; border-color: var(--line);">
-                <div class="h2">Modules</div>
-                <div class="list">${moduleCards}</div>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      function viewProfile(state){
-        const overall = overallStats(state);
-        return `
-          <div class="card">
-            <div class="h1">Profile</div>
-            <div class="muted">Placeholder profile screen (no backend). You can add name, sync, payments later.</div>
-
-            <div class="divider"></div>
-
-            <div class="kpi">
-              <div>
-                <b>Status</b><div class="small">Local-only progress tracking</div>
-              </div>
-              <div class="nowrap"><b>${overall.pct}%</b></div>
-            </div>
-
-            <div class="divider"></div>
-
-            <div class="small">
-              <div>• Device: <span class="muted">${esc(navigator.userAgent)}</span></div>
-              <div>• Storage key: <span class="muted">${esc(LS_KEY)}</span></div>
-            </div>
-          </div>
-        `;
-      }
-
-      // ---------- Render ----------
-      function render(){
-        const state = loadProgress();
-        const hash = getHash();
-        const route = parseRoute(hash);
-
-        setActiveNav(hash);
-        updateBackButton(route);
-
-        // Route hint (optional)
-        $routeHint.textContent = `Route: ${hash}`;
-
-        let html = "";
-        switch(route.name){
-          case "home":
-            html = viewHome(state);
-            break;
-          case "course":
-            html = viewCourse(state);
-            break;
-          case "module":
-            html = viewModule(state, route.params.moduleId);
-            break;
-          case "lesson":
-            html = viewLesson(state, route.params.moduleId, route.params.lessonId);
-            break;
-          case "progress":
-            html = viewProgress(state);
-            break;
-          case "profile":
-            html = viewProfile(state);
-            break;
-          default:
-            html = `
-              <div class="card">
-                <div class="h1">Not found</div>
-                <div class="muted">Unknown route: ${esc(route.name)}</div>
-                <div class="divider"></div>
-                <button class="btn primary" type="button" data-nav="#home">Go Home</button>
-              </div>
-            `;
-        }
-
-        $app.innerHTML = html;
-
-        // Attach click handlers (event delegation also covers Safari reliably)
-        wireEvents();
-
-        // Extra Safari nudge (render after layout)
-        requestAnimationFrame(() => {});
-      }
-
-      function wireEvents(){
-        // One global delegated handler is the most reliable (Safari, dynamic content)
-        // We re-attach safely by removing existing listener if any.
-        if(wireEvents._bound) return;
-        wireEvents._bound = true;
-
-        document.addEventListener("click", function(e){
-          const t = e.target;
-
-          // data-nav click (rows/buttons/nav)
-          const navEl = t.closest ? t.closest("[data-nav]") : null;
-          if(navEl){
-            e.preventDefault();
-            const h = navEl.getAttribute("data-nav");
-            if(h) navigate(h);
-            return;
-          }
-
-          // actions
-          const actEl = t.closest ? t.closest("[data-action]") : null;
-          if(actEl){
-            e.preventDefault();
-            const action = actEl.getAttribute("data-action");
-            if(action === "toggle-complete"){
-              const mid = actEl.getAttribute("data-mid");
-              const lid = actEl.getAttribute("data-lid");
-              if(mid && lid){
-                const state = loadProgress();
-                const current = isCompleted(state, mid, lid);
-                setCompleted(state, mid, lid, !current);
-                // re-render the same lesson view immediately
-                render();
-                setTimeout(render, 0);
-              }
-              return;
-            }
-            if(action === "reset-progress"){
-              try{
-                localStorage.removeItem(LS_KEY);
-              }catch(e){}
-              render();
-              setTimeout(render, 0);
-              return;
-            }
-          }
-        }, false);
-
-        // Bottom nav direct taps
-        document.querySelectorAll(".nav-item[data-nav]").forEach(el => {
-          // already handled by delegation, but ensure iOS registers tap area
-          el.addEventListener("touchend", function(){ /* no-op */ }, {passive:true});
-        });
-
-        // Back button
-        $backBtn.addEventListener("click", function(e){
-          e.preventDefault();
-          const route = parseRoute(getHash());
-          navigate(backTarget(route));
-        }, false);
-      }
-
-      // Ensure navigation works even if user sets invalid hash
-      function normalizeInitialHash(){
-        const h = getHash();
-        const r = parseRoute(h);
-
-        const ok =
-          r.name === "home" || r.name === "course" || r.name === "progress" || r.name === "profile" ||
-          (r.name === "module" && r.params.moduleId) ||
-          (r.name === "lesson" && r.params.moduleId && r.params.lessonId);
-
-        if(!ok) navigate("#home");
-      }
-
-      // Init
-      normalizeInitialHash();
-      render();
-      setTimeout(render, 0);
-
-      // Optional: service worker registration if present
-      // (kept safe: won't break if sw.js doesn't exist)
-      if("serviceWorker" in navigator){
-        window.addEventListener("load", () => {
-          navigator.serviceWorker.register("/sw.js").catch(() => {});
-        });
-      }
-    })();
-  </script>
-  <div style="position:fixed;top:10px;right:10px;z-index:9999;background:#4da3ff;color:#081126;padding:6px 10px;border-radius:10px;font-weight:800">
-  NEW BUILD MARKER
-</div>
+<header>Fence Installer Academy</header>
+<main id="app"></main>
+
+<nav>
+  <button onclick="go('#home')" id="tab-home">Home</button>
+  <button onclick="go('#course')" id="tab-course">Course</button>
+  <button onclick="go('#progress')" id="tab-progress">Progress</button>
+  <button onclick="go('#profile')" id="tab-profile">Profile</button>
+</nav>
+
+<script>
+const modules=[...Array(8)].map((_,m)=>({
+  id:m+1,
+  title:`Module ${m+1}`,
+  lessons:[1,2,3].map(l=>({
+    id:l,
+    title:`Lesson ${m+1}.${l}`,
+    text:`This is unique content for module ${m+1}, lesson ${l}. 
+Here we explain real fence installation steps, tools, safety notes and workflow.`
+  }))
+}));
+
+const progress=JSON.parse(localStorage.getItem('progress')||'{}');
+
+function save(){localStorage.setItem('progress',JSON.stringify(progress));}
+
+function go(h){
+  location.hash=h;
+  render();
+}
+
+window.addEventListener('hashchange',()=>setTimeout(render,0));
+
+function render(){
+  const app=document.getElementById('app');
+  const hash=location.hash||'#home';
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  const tab=document.getElementById('tab-'+hash.replace('#','').split('/')[0]);
+  if(tab)tab.classList.add('active');
+
+  if(hash==='#home'){
+    app.innerHTML=`
+      <div class="card">
+        <h2>Welcome</h2>
+        <p>Offline-first Fence Installer Academy</p>
+        <button class="primary" onclick="go('#course')">Open course</button>
+      </div>`;
+  }
+
+  else if(hash==='#course'){
+    app.innerHTML='<div class="list">'+modules.map(m=>`
+      <div class="item">
+        <div>${m.title}</div>
+        <button onclick="go('#module/${m.id}')">Open</button>
+      </div>`).join('')+'</div>';
+  }
+
+  else if(hash.startsWith('#module/')){
+    const id=+hash.split('/')[1];
+    const m=modules.find(x=>x.id===id);
+    app.innerHTML=`
+      <div class="card">
+        <h2>${m.title}</h2>
+        <div class="list">
+          ${m.lessons.map(l=>`
+            <div class="item">
+              <div>${l.title}</div>
+              <button onclick="go('#lesson/${id}/${l.id}')">Open</button>
+            </div>`).join('')}
+        </div>
+        <br><button onclick="go('#course')">Back</button>
+      </div>`;
+  }
+
+  else if(hash.startsWith('#lesson/')){
+    const [,,mId,lId]=hash.split('/');
+    const m=modules.find(x=>x.id==mId);
+    const l=m.lessons.find(x=>x.id==lId);
+    const key=`${mId}-${lId}`;
+    app.innerHTML=`
+      <div class="card">
+        <h2>${l.title}</h2>
+        <p>${l.text}</p>
+        <div class="row">
+          <button onclick="progress['${key}']=true;save();render()">Mark completed</button>
+          <button onclick="go('#module/${mId}')">Back</button>
+        </div>
+      </div>`;
+  }
+
+  else if(hash==='#progress'){
+    const done=Object.keys(progress).length;
+    app.innerHTML=`
+      <div class="card">
+        <h2>Progress</h2>
+        <p>${done} / 24 lessons completed</p>
+      </div>`;
+  }
+
+  else if(hash==='#profile'){
+    app.innerHTML=`
+      <div class="card">
+        <h2>Profile</h2>
+        <p>Settings coming soon</p>
+      </div>`;
+  }
+}
+
+render();
+</script>
 </body>
 </html>
